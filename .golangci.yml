@@ -26,6 +26,9 @@ linters-settings:
         arguments: [80]
       # - name: unhandled-error
       #   arguments : ["fmt.Printf", "myFunction"]
+  
+  stylecheck:
+    checks: ["all", "-ST1000"]
 
   cyclop:
     # The maximal code complexity to report.

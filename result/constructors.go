@@ -1,4 +1,3 @@
-// Package result implements functions for working with the Result type
 package result
 
 import "github.com/sagmor/fun"
