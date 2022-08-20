@@ -1,4 +1,3 @@
-// Package either implements functions for working with the Either type
 package either
 
 import "github.com/sagmor/fun"

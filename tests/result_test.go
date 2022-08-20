@@ -6,6 +6,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/sagmor/fun/either"
+	"github.com/sagmor/fun/maybe"
 	"github.com/sagmor/fun/result"
 )
 
@@ -15,6 +17,8 @@ func TestSuccess(t *testing.T) {
 	assert.True(t, r.IsSuccess())
 	assert.False(t, r.IsFailure())
 	assert.Equal(t, 5, r.RequireValue())
+	assert.Equal(t, either.Left[error](5), r.ToEither())
+	assert.Equal(t, maybe.Just(5), r.ToMaybe())
 
 	v, err := r.Get()
 	assert.Equal(t, 5, v)
@@ -30,6 +34,8 @@ func TestFailure(t *testing.T) {
 	assert.Panics(t, func() {
 		r.RequireValue()
 	})
+	assert.Equal(t, either.Right[int](assert.AnError), r.ToEither())
+	assert.Equal(t, maybe.Empty[int](), r.ToMaybe())
 
 	_, err := r.Get()
 	assert.Equal(t, assert.AnError, err)
