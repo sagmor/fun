@@ -7,6 +7,25 @@ run:
 # This file contains only configs which differ from defaults.
 # All possible options can be found here https://github.com/golangci/golangci-lint/blob/master/.golangci.reference.yml
 linters-settings:
+  goimports:
+    # Put imports beginning with prefix after 3rd-party packages.
+    local-prefixes: github.com/sagmor/fun
+
+  revive:
+    ignore-generated-header: true
+    severity: warning
+    rules:
+      - name: atomic
+      - name: exported
+        disabled: false
+        arguments:
+          - "sayRepetitiveInsteadOfStutters"
+      - name: line-length-limit
+        severity: error
+        arguments: [80]
+      # - name: unhandled-error
+      #   arguments : ["fmt.Printf", "myFunction"]
+
   cyclop:
     # The maximal code complexity to report.
     # Default: 10
@@ -71,24 +90,6 @@ linters-settings:
       - strconv.ParseInt
       - strconv.ParseUint
 
-  gomodguard:
-    blocked:
-      # List of blocked modules.
-      # Default: []
-      modules:
-        - github.com/golang/protobuf:
-            recommendations:
-              - google.golang.org/protobuf
-            reason: "see https://developers.google.com/protocol-buffers/docs/reference/go/faq#modules"
-        - github.com/satori/go.uuid:
-            recommendations:
-              - github.com/google/uuid
-            reason: "satori's package is not maintained"
-        - github.com/gofrs/uuid:
-            recommendations:
-              - github.com/google/uuid
-            reason: "see recommendation from dev-infra team: https://confluence.gtforge.com/x/gQI6Aw"
-
   govet:
     # Enable all analyzers.
     # Default: false
@@ -149,7 +150,6 @@ linters:
     - govet # Vet examines Go source code and reports suspicious constructs, such as Printf calls whose arguments do not align with the format string
     - ineffassign # Detects when assignments to existing variables are not used
     - staticcheck # Staticcheck is a go vet on steroids, applying a ton of static analysis checks
-    - structcheck # Finds unused struct fields
     - typecheck # Like the front-end of a Go compiler, parses and type-checks Go code
     - unused # Checks Go code for unused constants, variables, functions and types
     - varcheck # Finds unused global variables and constants
@@ -158,7 +158,6 @@ linters:
     - asciicheck # Simple linter to check that your code does not contain non-ASCII identifiers
     - bidichk # Checks for dangerous unicode character sequences
     - bodyclose # checks whether HTTP response body is closed successfully
-    - contextcheck # check the function whether use a non-inherited context
     - cyclop # checks function and package cyclomatic complexity
     - dupl # Tool for code clone detection
     - durationcheck # check for two durations multiplied together
@@ -195,8 +194,6 @@ linters:
     - predeclared # find code that shadows one of Go's predeclared identifiers
     - promlinter # Check Prometheus metrics naming via promlint
     - revive # Fast, configurable, extensible, flexible, and beautiful linter for Go. Drop-in replacement of golint.
-    - rowserrcheck # checks whether Err of rows is checked successfully
-    - sqlclosecheck # Checks that sql.Rows and sql.Stmt are closed.
     - stylecheck # Stylecheck is a replacement for golint
     - tenv # tenv is analyzer that detects using os.Setenv instead of t.Setenv since Go1.17
     - testpackage # linter that makes you use a separate _test package
@@ -204,8 +201,13 @@ linters:
     - unconvert # Remove unnecessary type conversions
     - unparam # Reports unused function parameters
     - usestdlibvars # detect the possibility to use variables/constants from the Go standard library
-    - wastedassign # wastedassign finds wasted assignment statements.
     - whitespace # Tool for detection of leading and trailing whitespace
+    ## Don't support generics
+    #- contextcheck # check the function whether use a non-inherited context
+    #- rowserrcheck # checks whether Err of rows is checked successfully
+    #- sqlclosecheck # Checks that sql.Rows and sql.Stmt are closed.
+    #- structcheck # Finds unused struct fields
+    #- wastedassign # wastedassign finds wasted assignment statements.
     ## you may want to enable
     #- decorder # check declaration order and count of types, constants, variables and functions
     #- exhaustruct # Checks if all structure fields are initialized
@@ -249,6 +251,8 @@ issues:
   # Set to 0 to disable.
   # Default: 3
   max-same-issues: 50
+
+  exclude-use-default: false
 
   exclude-rules:
     - source: "^//\\s*go:generate\\s"
