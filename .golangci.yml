@@ -2,6 +2,7 @@ run:
   # Timeout for analysis, e.g. 30s, 5m.
   # Default: 1m
   timeout: 3m
+  skip-dirs-use-default: false
 
 
 # This file contains only configs which differ from defaults.
@@ -196,7 +197,6 @@ linters:
     - revive # Fast, configurable, extensible, flexible, and beautiful linter for Go. Drop-in replacement of golint.
     - stylecheck # Stylecheck is a replacement for golint
     - tenv # tenv is analyzer that detects using os.Setenv instead of t.Setenv since Go1.17
-    - testpackage # linter that makes you use a separate _test package
     - tparallel # tparallel detects inappropriate usage of t.Parallel() method in your Go test codes
     - unconvert # Remove unnecessary type conversions
     - unparam # Reports unused function parameters
@@ -209,6 +209,7 @@ linters:
     #- structcheck # Finds unused struct fields
     #- wastedassign # wastedassign finds wasted assignment statements.
     ## you may want to enable
+    #- testpackage # linter that makes you use a separate _test package
     #- decorder # check declaration order and count of types, constants, variables and functions
     #- exhaustruct # Checks if all structure fields are initialized
     #- goheader # Checks is file header matches to pattern
