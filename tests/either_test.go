@@ -1,4 +1,4 @@
-package either_test
+package tests
 
 import (
 	"testing"

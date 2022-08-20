@@ -1,4 +1,4 @@
-package fun_test
+package tests
 
 import (
 	"testing"
