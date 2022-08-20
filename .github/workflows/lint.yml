@@ -23,3 +23,9 @@ jobs:
         with:
           version: latest
           only-new-issues: true
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: latest
+          only-new-issues: true
+          working-directory: tests
