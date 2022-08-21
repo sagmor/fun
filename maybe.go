@@ -42,13 +42,3 @@ func (m Maybe[T]) RequireValue() T {
 
 	return m.left
 }
-
-// ToResult convert into a Result.
-func (m Maybe[T]) ToResult() Result[T] {
-	var err error
-	if m.IsEmpty() {
-		err = errMaybeMissingValue
-	}
-
-	return NewResult(m.left, err)
-}
