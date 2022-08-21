@@ -16,12 +16,12 @@ func Steper[From, To any](f func(From) To) StepFun[From, To] {
 func Step[From, To any](
 	from fun.Result[From],
 	step StepFun[From, To]) fun.Result[To] {
-	val, err := from.Get()
+	val, err := from.ToTuple()
 	if err != nil {
 		return Failure[To](err)
 	}
 
-	return fun.NewResult(step(val))
+	return FromTuple(step(val))
 }
 
 // Steps2 runs Step twice.

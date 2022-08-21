@@ -6,6 +6,7 @@ import (
 
 	"github.com/sagmor/fun"
 	"github.com/sagmor/fun/maybe"
+	"github.com/sagmor/fun/result"
 )
 
 type promise[T any] struct {
@@ -37,6 +38,14 @@ func newPromise[T any](ctx context.Context, cancelFunc context.CancelFunc, handl
 	return p
 }
 
+func (p *promise[T]) resolver(val T, err error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+
+	p.resolution = maybe.Just(result.FromTuple(val, err))
+	close(p.signal)
+}
+
 // Cancel implements Promise.
 func (p *promise[T]) Cancel() {
 	p.mu.Lock()
@@ -47,26 +56,18 @@ func (p *promise[T]) Cancel() {
 	}
 }
 
-// Collect implements Promise.
-func (p *promise[T]) Collect() (T, error) {
-	panic("unimplemented")
-}
-
 // IsResolved implements Promise.
 func (p *promise[T]) IsResolved() bool {
 	return p.resolution.HasValue()
 }
 
+// Result implements Promise.
+func (p *promise[T]) Result() fun.Result[T] {
+	p.Wait()
+	return p.resolution.RequireValue()
+}
+
 // IsFailure implements Promise.
-func (p *promise[T]) IsFailure() bool {
-	return p.Result().IsFailure()
-}
-
-// IsSuccess implements Promise.
-func (p *promise[T]) IsSuccess() bool {
-	return p.Result().IsSuccess()
-}
-
 func (p *promise[T]) Wait() {
 	if p.IsResolved() {
 		return
@@ -80,16 +81,37 @@ func (p *promise[T]) Wait() {
 	}
 }
 
-// Result implements Promise.
-func (p *promise[T]) Result() fun.Result[T] {
-	p.Wait()
-	return p.resolution.RequireValue()
+// IsFailure implements Result.
+func (p *promise[T]) Error() error {
+	return p.Result().Error()
 }
 
-func (p *promise[T]) resolver(val T, err error) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
+// IsFailure implements Result.
+func (p *promise[T]) IsFailure() bool {
+	return p.Result().IsFailure()
+}
 
-	p.resolution = maybe.Just(fun.NewResult(val, err))
-	close(p.signal)
+// IsSuccess implements Result.
+func (p *promise[T]) IsSuccess() bool {
+	return p.Result().IsSuccess()
+}
+
+// RequireValue implements Result.
+func (p *promise[T]) RequireValue() T {
+	return p.Result().RequireValue()
+}
+
+// ToEither implements Result.
+func (p *promise[T]) ToEither() fun.Either[T, error] {
+	return p.Result().ToEither()
+}
+
+// ToMaybe implements Result.
+func (p *promise[T]) ToMaybe() fun.Maybe[T] {
+	return p.Result().ToMaybe()
+}
+
+// ToTuple implements Result.
+func (p *promise[T]) ToTuple() (T, error) {
+	return p.Result().ToTuple()
 }

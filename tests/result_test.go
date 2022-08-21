@@ -20,7 +20,7 @@ func TestSuccess(t *testing.T) {
 	assert.Equal(t, either.Left[error](5), r.ToEither())
 	assert.Equal(t, maybe.Just(5), r.ToMaybe())
 
-	v, err := r.Get()
+	v, err := r.ToTuple()
 	assert.Equal(t, 5, v)
 	assert.Nil(t, err)
 }
@@ -37,7 +37,7 @@ func TestFailure(t *testing.T) {
 	assert.Equal(t, either.Right[int](assert.AnError), r.ToEither())
 	assert.Equal(t, maybe.Empty[int](), r.ToMaybe())
 
-	_, err := r.Get()
+	_, err := r.ToTuple()
 	assert.Equal(t, assert.AnError, err)
 }
 

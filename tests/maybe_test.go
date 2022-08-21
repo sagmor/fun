@@ -8,7 +8,6 @@ import (
 	"github.com/sagmor/fun"
 	"github.com/sagmor/fun/either"
 	"github.com/sagmor/fun/maybe"
-	"github.com/sagmor/fun/result"
 )
 
 func TestJust(t *testing.T) {
@@ -18,7 +17,6 @@ func TestJust(t *testing.T) {
 	assert.False(t, m.IsEmpty())
 	assert.Equal(t, 5, m.RequireValue())
 	assert.Equal(t, either.Left[fun.Nothing](5), m.ToEither())
-	assert.Equal(t, result.Success(5), m.ToResult())
 }
 
 func TestMaybeEmpty(t *testing.T) {
@@ -31,5 +29,4 @@ func TestMaybeEmpty(t *testing.T) {
 	})
 
 	assert.Equal(t, either.Right[int](fun.Nothing{}), m.ToEither())
-	assert.Error(t, m.ToResult().Error())
 }
