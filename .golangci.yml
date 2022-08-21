@@ -23,7 +23,7 @@ linters-settings:
           - "sayRepetitiveInsteadOfStutters"
       - name: line-length-limit
         severity: error
-        arguments: [80]
+        arguments: [120]
       # - name: unhandled-error
       #   arguments : ["fmt.Printf", "myFunction"]
   
