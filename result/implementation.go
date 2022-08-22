@@ -18,7 +18,7 @@ func (r result[T]) IsFailure() bool {
 	return r.ToEither().IsRight()
 }
 
-// IsSuccess check if the Result is successfull.
+// IsSuccess check if the Result is successful.
 func (r result[T]) IsSuccess() bool {
 	return r.ToEither().IsLeft()
 }

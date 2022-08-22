@@ -5,8 +5,8 @@ import "github.com/sagmor/fun"
 // StepFun is a function to transform from one type to the other.
 type StepFun[From, To any] func(From) (To, error)
 
-// Steper converts a function into a Result Step functions.
-func Steper[From, To any](f func(From) To) StepFun[From, To] {
+// Stepper converts a function into a Result Step functions.
+func Stepper[From, To any](f func(From) To) StepFun[From, To] {
 	return func(val From) (To, error) {
 		return f(val), nil
 	}

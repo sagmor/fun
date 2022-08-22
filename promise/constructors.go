@@ -17,7 +17,7 @@ func New[T any](handler Handler[T]) fun.Promise[T] {
 func WithTimeout[T any](timeout time.Duration, handler Handler[T]) fun.Promise[T] {
 	ctx, cancelFunc := context.WithTimeout(context.Background(), timeout)
 
-	return newPromise[T](ctx, cancelFunc, handler)
+	return newPromise(ctx, cancelFunc, handler)
 }
 
 // WithDeadline creates a promise with a deadline.
@@ -27,21 +27,21 @@ func WithDeadline[T any](d time.Time, handler Handler[T]) fun.Promise[T] {
 	return newPromise(ctx, cancelFunc, handler)
 }
 
-// FromValue returns a falue that fullfills with a static value.
+// FromValue returns a promise that fulfills with a static value.
 func FromValue[T any](value T) fun.Promise[T] {
 	return New(func(ctx context.Context, resolve Resolver[T]) {
 		resolve(value, nil)
 	})
 }
 
-// FromResult returns a falue that fullfills with a static result.
+// FromResult returns a promise that fulfills with a static result.
 func FromResult[T any](value fun.Result[T]) fun.Promise[T] {
 	return New(func(ctx context.Context, resolve Resolver[T]) {
 		resolve(value.ToTuple())
 	})
 }
 
-// FromError returns a falue that fullfills with a static error.
+// FromError returns a promise that fulfills with a static error.
 func FromError[T any](err error) fun.Promise[T] {
 	return New(func(ctx context.Context, resolve Resolver[T]) {
 		resolve(fun.Nil[T](), err)

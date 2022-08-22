@@ -20,7 +20,7 @@ type promise[T any] struct {
 // Compile time check to ensure promise is a fun.Promise.
 var _ fun.Promise[int] = &promise[int]{}
 
-// Resolver is a functiuon to resolve a promise.
+// Resolver is a function to resolve a promise.
 type Resolver[T any] func(T, error)
 
 // Handler is a function that handles a promise.
