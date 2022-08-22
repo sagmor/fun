@@ -7,6 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/sagmor/fun"
 	"github.com/sagmor/fun/promise"
 	"github.com/sagmor/fun/result"
 )
@@ -46,4 +47,26 @@ func TestPromiseCancel(t *testing.T) {
 	})
 	p.Cancel()
 	assert.Error(t, p.Result().Error())
+}
+
+func TestPromiseAll(t *testing.T) {
+	build := func(i int) fun.Promise[int] {
+		return promise.New(func(ctx context.Context, r promise.Resolver[int]) {
+			time.Sleep(time.Millisecond * time.Duration(10*i))
+			r(i, nil)
+		})
+	}
+
+	// Promises should be returned in the order they are fulfilled.
+	all := promise.All(build(3), build(1), build(2))
+	assert.True(t, all.Next())
+	assert.Equal(t, 1, all.Value().RequireValue())
+
+	assert.True(t, all.Next())
+	assert.Equal(t, 2, all.Value().RequireValue())
+
+	assert.True(t, all.Next())
+	assert.Equal(t, 3, all.Value().RequireValue())
+
+	assert.False(t, all.Next())
 }
