@@ -49,7 +49,7 @@ func TestStep(t *testing.T) {
 
 	assert.Equal(t, "3", result.Step(
 		result.Success(3),
-		result.Steper(strconv.Itoa),
+		result.Stepper(strconv.Itoa),
 	).RequireValue())
 
 	assert.Error(t, result.Step(
@@ -67,27 +67,27 @@ func TestSteps(t *testing.T) {
 	assert.Equal(t, "5", result.Steps2(
 		result.Success("5"),
 		strconv.Atoi,
-		result.Steper(strconv.Itoa),
+		result.Stepper(strconv.Itoa),
 	).RequireValue())
 
 	assert.Equal(t, 5, result.Steps3(
 		result.Success("5"),
 		strconv.Atoi,
-		result.Steper(strconv.Itoa),
+		result.Stepper(strconv.Itoa),
 		strconv.Atoi,
 	).RequireValue())
 
 	assert.Equal(t, "5", result.Steps4(
 		result.Success("5"),
 		strconv.Atoi,
-		result.Steper(strconv.Itoa),
+		result.Stepper(strconv.Itoa),
 		strconv.Atoi,
-		result.Steper(strconv.Itoa),
+		result.Stepper(strconv.Itoa),
 	).RequireValue())
 
 	assert.Error(t, result.Steps2(
 		result.Success("something"),
 		strconv.Atoi,
-		result.Steper(strconv.Itoa),
+		result.Stepper(strconv.Itoa),
 	).Error())
 }
