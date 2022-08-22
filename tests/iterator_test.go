@@ -60,3 +60,18 @@ func TestIteratorToSlice(t *testing.T) {
 	it := iterator.FromRevertSlice([]int{1, 2, 3})
 	assert.Equal(t, []int{3, 2, 1}, iterator.ToSlice(it))
 }
+
+func TestIteratorWithTransform(t *testing.T) {
+	it := iterator.WithTransform(iterator.FromSlice([]int{1, 2, 3}), strconv.Itoa)
+
+	assert.True(t, it.Next())
+	assert.Equal(t, "1", it.Value())
+
+	assert.True(t, it.Next())
+	assert.Equal(t, "2", it.Value())
+
+	assert.True(t, it.Next())
+	assert.Equal(t, "3", it.Value())
+
+	assert.False(t, it.Next())
+}

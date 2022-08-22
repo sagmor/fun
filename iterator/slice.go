@@ -51,6 +51,12 @@ func FromRevertSlice[T any](slice []T) fun.Iterator[T] {
 }
 
 // ToSlice collects all values and returns a slice.
-func ToSlice[T any](it fun.Iterator[T]) []T {
-	return Map(it, fun.Identity[T])
+func ToSlice[T any](iter fun.Iterator[T]) []T {
+	results := []T{}
+
+	for iter.Next() {
+		results = append(results, iter.Value())
+	}
+
+	return results
 }

@@ -7,13 +7,7 @@ import (
 
 // Map applies a mapper function to every element of an iterator an returns a slice.
 func Map[T, R any](iter fun.Iterator[T], mapper func(T) R) []R {
-	results := []R{}
-
-	for iter.Next() {
-		results = append(results, mapper(iter.Value()))
-	}
-
-	return results
+	return ToSlice(WithTransform(iter, mapper))
 }
 
 // Reduce collects over all the elements of an iterator.
