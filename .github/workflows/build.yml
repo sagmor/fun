@@ -12,6 +12,7 @@ permissions:
   contents: read
 jobs:
   build:
+    name: Build
     strategy:
       matrix:
         operating-system:
