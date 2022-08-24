@@ -38,4 +38,4 @@ jobs:
         with:
           path-to-lcov: coverage.lcov
         # Publish coverage only from one job
-        if: ${{ matrix.operating-system == "ubuntu-latest" && matrix.go-version == "1.18.5" }}
+        if: ${{ matrix.operating-system }} == "ubuntu-latest" && ${{ matrix.go-version }} == "1.18.5"
