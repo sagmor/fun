@@ -37,14 +37,11 @@ func All[T any](promises ...fun.Promise[T]) fun.Iterator[fun.Result[T]] {
 		collector: make(chan int, len(promises)),
 	}
 
-	for i, p := range promises {
-		go func(index int, p fun.Promise[T]) {
-			if pr, ok := p.(*promise[T]); ok {
-				<-pr.signal
-			}
-
+	for index, promise := range promises {
+		go func(index int, promise fun.Promise[T]) {
+			promise.Wait()
 			iter.collector <- index
-		}(i, p)
+		}(index, promise)
 	}
 
 	return iter

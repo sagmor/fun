@@ -32,18 +32,18 @@ func TestPromiseFromResult(t *testing.T) {
 }
 
 func TestPromiseWithTimeout(t *testing.T) {
-	p := promise.WithTimeout(time.Millisecond*10, func(ctx context.Context, resolver promise.Resolver[bool]) {
+	p := promise.WithTimeout(time.Millisecond*10, func(ctx context.Context) (bool, error) {
 		time.Sleep(time.Second)
-		resolver(true, nil)
+		return true, nil
 	})
 	assert.False(t, p.IsResolved())
 	assert.Error(t, p.Result().Error())
 }
 
 func TestPromiseCancel(t *testing.T) {
-	p := promise.New(func(ctx context.Context, resolver promise.Resolver[bool]) {
+	p := promise.New(func(ctx context.Context) (bool, error) {
 		time.Sleep(time.Second)
-		resolver(true, nil)
+		return true, nil
 	})
 	p.Cancel()
 	assert.Error(t, p.Result().Error())
@@ -51,9 +51,9 @@ func TestPromiseCancel(t *testing.T) {
 
 func TestPromiseAll(t *testing.T) {
 	build := func(i int) fun.Promise[int] {
-		return promise.New(func(ctx context.Context, r promise.Resolver[int]) {
+		return promise.New(func(ctx context.Context) (int, error) {
 			time.Sleep(time.Millisecond * time.Duration(10*i))
-			r(i, nil)
+			return i, nil
 		})
 	}
 

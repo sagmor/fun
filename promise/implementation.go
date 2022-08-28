@@ -20,11 +20,8 @@ type promise[T any] struct {
 // Compile time check to ensure promise is a fun.Promise.
 var _ fun.Promise[int] = &promise[int]{}
 
-// Resolver is a function to resolve a promise.
-type Resolver[T any] func(T, error)
-
 // Handler is a function that handles a promise.
-type Handler[T any] func(context.Context, Resolver[T])
+type Handler[T any] func(context.Context) (T, error)
 
 func newPromise[T any](ctx context.Context, cancelFunc context.CancelFunc, handler Handler[T]) *promise[T] {
 	p := &promise[T]{
@@ -33,7 +30,9 @@ func newPromise[T any](ctx context.Context, cancelFunc context.CancelFunc, handl
 		signal:     make(chan fun.Nothing),
 	}
 
-	go handler(p.context, p.resolver)
+	go func() {
+		p.resolver(handler(p.context))
+	}()
 
 	return p
 }
@@ -41,6 +40,9 @@ func newPromise[T any](ctx context.Context, cancelFunc context.CancelFunc, handl
 func (p *promise[T]) resolver(val T, err error) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
+	if p.IsResolved() {
+		return
+	}
 
 	p.resolution = maybe.Just(result.FromTuple(val, err))
 	close(p.signal)
@@ -48,12 +50,7 @@ func (p *promise[T]) resolver(val T, err error) {
 
 // Cancel implements Promise.
 func (p *promise[T]) Cancel() {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-
-	if p.resolution.IsEmpty() {
-		p.cancelFunc()
-	}
+	p.cancelFunc()
 }
 
 // IsResolved implements Promise.
@@ -67,7 +64,7 @@ func (p *promise[T]) Result() fun.Result[T] {
 	return p.resolution.RequireValue()
 }
 
-// IsFailure implements Promise.
+// Wait implements Promise.
 func (p *promise[T]) Wait() {
 	if p.IsResolved() {
 		return
