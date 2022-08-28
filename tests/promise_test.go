@@ -8,6 +8,8 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/sagmor/fun"
+	"github.com/sagmor/fun/either"
+	"github.com/sagmor/fun/maybe"
 	"github.com/sagmor/fun/promise"
 	"github.com/sagmor/fun/result"
 )
@@ -16,12 +18,20 @@ func TestPromiseFromValue(t *testing.T) {
 	p := promise.FromValue(3)
 
 	assert.Equal(t, result.Success(3), p.Result())
+	assert.Equal(t, maybe.Just(3), p.ToMaybe())
+	assert.Equal(t, either.Left[error](3), p.ToEither())
+	assert.Equal(t, 3, p.RequireValue())
+	assert.True(t, p.IsSuccess())
+	assert.False(t, p.IsFailure())
 }
 
 func TestPromiseFromError(t *testing.T) {
 	p := promise.FromError[string](assert.AnError)
 
 	assert.Equal(t, result.Failure[string](assert.AnError), p.Result())
+	assert.Equal(t, either.Right[string](assert.AnError), p.ToEither())
+	assert.False(t, p.IsSuccess())
+	assert.True(t, p.IsFailure())
 }
 
 func TestPromiseFromResult(t *testing.T) {
@@ -32,18 +42,27 @@ func TestPromiseFromResult(t *testing.T) {
 }
 
 func TestPromiseWithTimeout(t *testing.T) {
-	p := promise.WithTimeout(time.Millisecond*10, func(ctx context.Context, resolver promise.Resolver[bool]) {
+	p := promise.WithTimeout(time.Millisecond*10, func(ctx context.Context) (bool, error) {
 		time.Sleep(time.Second)
-		resolver(true, nil)
+		return true, nil
 	})
 	assert.False(t, p.IsResolved())
-	assert.Error(t, p.Result().Error())
+	assert.Error(t, p.Error())
+}
+
+func TestPromiseWithDeadline(t *testing.T) {
+	p := promise.WithDeadline(time.Now().Add(time.Millisecond), func(ctx context.Context) (bool, error) {
+		time.Sleep(time.Second)
+		return true, nil
+	})
+	assert.False(t, p.IsResolved())
+	assert.Error(t, p.Error())
 }
 
 func TestPromiseCancel(t *testing.T) {
-	p := promise.New(func(ctx context.Context, resolver promise.Resolver[bool]) {
+	p := promise.New(func(ctx context.Context) (bool, error) {
 		time.Sleep(time.Second)
-		resolver(true, nil)
+		return true, nil
 	})
 	p.Cancel()
 	assert.Error(t, p.Result().Error())
@@ -51,9 +70,9 @@ func TestPromiseCancel(t *testing.T) {
 
 func TestPromiseAll(t *testing.T) {
 	build := func(i int) fun.Promise[int] {
-		return promise.New(func(ctx context.Context, r promise.Resolver[int]) {
+		return promise.New(func(ctx context.Context) (int, error) {
 			time.Sleep(time.Millisecond * time.Duration(10*i))
-			r(i, nil)
+			return i, nil
 		})
 	}
 
@@ -69,4 +88,17 @@ func TestPromiseAll(t *testing.T) {
 	assert.Equal(t, 3, all.Value().RequireValue())
 
 	assert.False(t, all.Next())
+}
+
+func TestPromiseCancelRace(t *testing.T) {
+	i := 0
+	for i < 100 {
+		p := promise.FromValue(i)
+		go p.Cancel()
+		val, err := p.ToTuple()
+		if err == nil {
+			assert.Equal(t, i, val)
+		}
+		i++
+	}
 }

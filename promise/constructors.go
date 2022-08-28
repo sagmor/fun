@@ -29,21 +29,21 @@ func WithDeadline[T any](d time.Time, handler Handler[T]) fun.Promise[T] {
 
 // FromValue returns a promise that fulfills with a static value.
 func FromValue[T any](value T) fun.Promise[T] {
-	return New(func(ctx context.Context, resolve Resolver[T]) {
-		resolve(value, nil)
+	return New(func(ctx context.Context) (T, error) {
+		return value, nil
 	})
 }
 
 // FromResult returns a promise that fulfills with a static result.
 func FromResult[T any](value fun.Result[T]) fun.Promise[T] {
-	return New(func(ctx context.Context, resolve Resolver[T]) {
-		resolve(value.ToTuple())
+	return New(func(ctx context.Context) (T, error) {
+		return value.ToTuple()
 	})
 }
 
 // FromError returns a promise that fulfills with a static error.
 func FromError[T any](err error) fun.Promise[T] {
-	return New(func(ctx context.Context, resolve Resolver[T]) {
-		resolve(fun.Nil[T](), err)
+	return New(func(ctx context.Context) (T, error) {
+		return fun.Nil[T](), err
 	})
 }
