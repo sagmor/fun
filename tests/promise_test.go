@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/sagmor/fun"
+	"github.com/sagmor/fun/maybe"
 	"github.com/sagmor/fun/promise"
 	"github.com/sagmor/fun/result"
 )
@@ -16,6 +17,8 @@ func TestPromiseFromValue(t *testing.T) {
 	p := promise.FromValue(3)
 
 	assert.Equal(t, result.Success(3), p.Result())
+	assert.Equal(t, maybe.Just(3), p.ToMaybe())
+	assert.Equal(t, 3, p.RequireValue())
 }
 
 func TestPromiseFromError(t *testing.T) {
@@ -37,7 +40,16 @@ func TestPromiseWithTimeout(t *testing.T) {
 		return true, nil
 	})
 	assert.False(t, p.IsResolved())
-	assert.Error(t, p.Result().Error())
+	assert.Error(t, p.Error())
+}
+
+func TestPromiseWithDeadline(t *testing.T) {
+	p := promise.WithDeadline(time.Now().Add(time.Millisecond), func(ctx context.Context) (bool, error) {
+		time.Sleep(time.Second)
+		return true, nil
+	})
+	assert.False(t, p.IsResolved())
+	assert.Error(t, p.Error())
 }
 
 func TestPromiseCancel(t *testing.T) {
@@ -69,4 +81,17 @@ func TestPromiseAll(t *testing.T) {
 	assert.Equal(t, 3, all.Value().RequireValue())
 
 	assert.False(t, all.Next())
+}
+
+func TestPromiseCancelRace(t *testing.T) {
+	i := 0
+	for i < 100 {
+		p := promise.FromValue(i)
+		go p.Cancel()
+		val, err := p.ToTuple()
+		if err == nil {
+			assert.Equal(t, i, val)
+		}
+		i++
+	}
 }
