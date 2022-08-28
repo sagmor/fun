@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/sagmor/fun"
+	"github.com/sagmor/fun/either"
 	"github.com/sagmor/fun/maybe"
 	"github.com/sagmor/fun/promise"
 	"github.com/sagmor/fun/result"
@@ -18,13 +19,19 @@ func TestPromiseFromValue(t *testing.T) {
 
 	assert.Equal(t, result.Success(3), p.Result())
 	assert.Equal(t, maybe.Just(3), p.ToMaybe())
+	assert.Equal(t, either.Left[error](3), p.ToEither())
 	assert.Equal(t, 3, p.RequireValue())
+	assert.True(t, p.IsSuccess())
+	assert.False(t, p.IsFailure())
 }
 
 func TestPromiseFromError(t *testing.T) {
 	p := promise.FromError[string](assert.AnError)
 
 	assert.Equal(t, result.Failure[string](assert.AnError), p.Result())
+	assert.Equal(t, either.Right[string](assert.AnError), p.ToEither())
+	assert.False(t, p.IsSuccess())
+	assert.True(t, p.IsFailure())
 }
 
 func TestPromiseFromResult(t *testing.T) {
