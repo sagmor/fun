@@ -37,7 +37,7 @@ func FromValue[T any](value T) fun.Promise[T] {
 // FromResult returns a promise that fulfills with a static result.
 func FromResult[T any](value fun.Result[T]) fun.Promise[T] {
 	return New(func(ctx context.Context) (T, error) {
-		return value.ToTuple()
+		return value.Tuple()
 	})
 }
 

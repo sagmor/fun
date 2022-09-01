@@ -16,7 +16,7 @@ func TestLeft(t *testing.T) {
 	assert.Equal(t, 3, e.Left())
 	assert.Equal(t, 3, e.RequireLeft())
 
-	v, _ := e.ToTuple()
+	v, _ := e.Tuple()
 	assert.Equal(t, 3, v)
 
 	assert.Panics(t, func() {
@@ -32,7 +32,7 @@ func TestRight(t *testing.T) {
 	assert.Equal(t, "hello", e.Right())
 	assert.Equal(t, "hello", e.RequireRight())
 
-	_, v := e.ToTuple()
+	_, v := e.Tuple()
 	assert.Equal(t, "hello", v)
 
 	assert.Panics(t, func() {

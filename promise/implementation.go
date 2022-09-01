@@ -99,16 +99,16 @@ func (p *promise[T]) RequireValue() T {
 }
 
 // ToEither implements Result.
-func (p *promise[T]) ToEither() fun.Either[T, error] {
-	return p.Result().ToEither()
+func (p *promise[T]) Either() fun.Either[T, error] {
+	return p.Result().Either()
 }
 
 // ToMaybe implements Result.
-func (p *promise[T]) ToMaybe() fun.Maybe[T] {
-	return p.Result().ToMaybe()
+func (p *promise[T]) Maybe() fun.Maybe[T] {
+	return p.Result().Maybe()
 }
 
 // ToTuple implements Result.
-func (p *promise[T]) ToTuple() (T, error) {
-	return p.Result().ToTuple()
+func (p *promise[T]) Tuple() (T, error) {
+	return p.Result().Tuple()
 }

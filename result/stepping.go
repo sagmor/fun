@@ -16,7 +16,7 @@ func Stepper[From, To any](f func(From) To) StepFun[From, To] {
 func Step[From, To any](
 	from fun.Result[From],
 	step StepFun[From, To]) fun.Result[To] {
-	val, err := from.ToTuple()
+	val, err := from.Tuple()
 	if err != nil {
 		return Failure[To](err)
 	}

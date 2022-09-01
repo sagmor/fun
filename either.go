@@ -62,7 +62,7 @@ func (e Either[L, R]) RequireRight() R {
 	return e.right
 }
 
-// ToTuple both values regardless of the type.
-func (e Either[L, R]) ToTuple() (L, R) {
+// Tuple returns both values regardless of the type.
+func (e Either[L, R]) Tuple() (L, R) {
 	return e.left, e.right
 }

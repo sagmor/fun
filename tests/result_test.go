@@ -17,10 +17,10 @@ func TestSuccess(t *testing.T) {
 	assert.True(t, r.IsSuccess())
 	assert.False(t, r.IsFailure())
 	assert.Equal(t, 5, r.RequireValue())
-	assert.Equal(t, either.Left[error](5), r.ToEither())
-	assert.Equal(t, maybe.Just(5), r.ToMaybe())
+	assert.Equal(t, either.Left[error](5), r.Either())
+	assert.Equal(t, maybe.Just(5), r.Maybe())
 
-	v, err := r.ToTuple()
+	v, err := r.Tuple()
 	assert.Equal(t, 5, v)
 	assert.Nil(t, err)
 }
@@ -34,10 +34,10 @@ func TestFailure(t *testing.T) {
 	assert.Panics(t, func() {
 		r.RequireValue()
 	})
-	assert.Equal(t, either.Right[int](assert.AnError), r.ToEither())
-	assert.Equal(t, maybe.Empty[int](), r.ToMaybe())
+	assert.Equal(t, either.Right[int](assert.AnError), r.Either())
+	assert.Equal(t, maybe.Empty[int](), r.Maybe())
 
-	_, err := r.ToTuple()
+	_, err := r.Tuple()
 	assert.Equal(t, assert.AnError, err)
 }
 
