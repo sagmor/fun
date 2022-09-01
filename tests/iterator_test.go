@@ -75,3 +75,14 @@ func TestIteratorWithTransform(t *testing.T) {
 
 	assert.False(t, it.Next())
 }
+
+func TestIteratorWithFilter(t *testing.T) {
+	it := iterator.WithFilter(iterator.FromSlice([]int{1, 2, 3, 4, 5}), func(i int) bool { return i%2 == 0 })
+	assert.True(t, it.Next())
+	assert.Equal(t, 2, it.Value())
+
+	assert.True(t, it.Next())
+	assert.Equal(t, 4, it.Value())
+
+	assert.False(t, it.Next())
+}
