@@ -19,16 +19,16 @@ func NewMaybe[T any](hasValue bool, value T) Maybe[T] {
 
 // IsEmpty checks if this is a Nothing/Empty Maybe.
 func (m Maybe[T]) IsEmpty() bool {
-	return m.ToEither().IsRight()
+	return m.Either().IsRight()
 }
 
 // HasValue checks if the maybe has something in it.
 func (m Maybe[T]) HasValue() bool {
-	return m.ToEither().IsLeft()
+	return m.Either().IsLeft()
 }
 
-// ToEither converts into a Maybe.
-func (m Maybe[T]) ToEither() Either[T, Nothing] {
+// Either converts into a Maybe.
+func (m Maybe[T]) Either() Either[T, Nothing] {
 	return Either[T, Nothing](m)
 }
 

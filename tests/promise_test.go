@@ -18,8 +18,8 @@ func TestPromiseFromValue(t *testing.T) {
 	p := promise.FromValue(3)
 
 	assert.Equal(t, result.Success(3), p.Result())
-	assert.Equal(t, maybe.Just(3), p.ToMaybe())
-	assert.Equal(t, either.Left[error](3), p.ToEither())
+	assert.Equal(t, maybe.Just(3), p.Maybe())
+	assert.Equal(t, either.Left[error](3), p.Either())
 	assert.Equal(t, 3, p.RequireValue())
 	assert.True(t, p.IsSuccess())
 	assert.False(t, p.IsFailure())
@@ -29,7 +29,7 @@ func TestPromiseFromError(t *testing.T) {
 	p := promise.FromError[string](assert.AnError)
 
 	assert.Equal(t, result.Failure[string](assert.AnError), p.Result())
-	assert.Equal(t, either.Right[string](assert.AnError), p.ToEither())
+	assert.Equal(t, either.Right[string](assert.AnError), p.Either())
 	assert.False(t, p.IsSuccess())
 	assert.True(t, p.IsFailure())
 }
@@ -95,7 +95,7 @@ func TestPromiseCancelRace(t *testing.T) {
 	for i < 100 {
 		p := promise.FromValue(i)
 		go p.Cancel()
-		val, err := p.ToTuple()
+		val, err := p.Tuple()
 		if err == nil {
 			assert.Equal(t, i, val)
 		}

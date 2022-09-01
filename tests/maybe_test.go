@@ -16,7 +16,7 @@ func TestJust(t *testing.T) {
 	assert.True(t, m.HasValue())
 	assert.False(t, m.IsEmpty())
 	assert.Equal(t, 5, m.RequireValue())
-	assert.Equal(t, either.Left[fun.Nothing](5), m.ToEither())
+	assert.Equal(t, either.Left[fun.Nothing](5), m.Either())
 }
 
 func TestMaybeEmpty(t *testing.T) {
@@ -28,5 +28,5 @@ func TestMaybeEmpty(t *testing.T) {
 		m.RequireValue()
 	})
 
-	assert.Equal(t, either.Right[int](fun.Nothing{}), m.ToEither())
+	assert.Equal(t, either.Right[int](fun.Nothing{}), m.Either())
 }

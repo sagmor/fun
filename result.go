@@ -6,7 +6,7 @@ type Result[T any] interface {
 	IsFailure() bool
 	IsSuccess() bool
 	RequireValue() T
-	ToEither() Either[T, error]
-	ToMaybe() Maybe[T]
-	ToTuple() (T, error)
+	Either() Either[T, error]
+	Maybe() Maybe[T]
+	Tuple() (T, error)
 }

@@ -10,39 +10,39 @@ var _ fun.Result[int] = result[int]{}
 
 // Error gets the Result error.
 func (r result[T]) Error() error {
-	return r.ToEither().Right()
+	return r.Either().Right()
 }
 
 // IsFailure checks if the result is a failure.
 func (r result[T]) IsFailure() bool {
-	return r.ToEither().IsRight()
+	return r.Either().IsRight()
 }
 
 // IsSuccess check if the Result is successful.
 func (r result[T]) IsSuccess() bool {
-	return r.ToEither().IsLeft()
+	return r.Either().IsLeft()
 }
 
 // RequireValue get's the result value or panics.
 func (r result[T]) RequireValue() T {
 	if r.IsSuccess() {
-		return r.ToEither().Left()
+		return r.Either().Left()
 	}
 
 	panic(r.Error())
 }
 
 // Get extract both value and error.
-func (r result[T]) ToTuple() (T, error) {
-	return r.ToEither().ToTuple()
+func (r result[T]) Tuple() (T, error) {
+	return r.Either().Tuple()
 }
 
 // ToEither converts a result to an Either.
-func (r result[T]) ToEither() fun.Either[T, error] {
+func (r result[T]) Either() fun.Either[T, error] {
 	return fun.Either[T, error](r)
 }
 
 // ToMaybe converts a result to a Maybe.
-func (r result[T]) ToMaybe() fun.Maybe[T] {
-	return fun.NewMaybe(r.IsSuccess(), r.ToEither().Left())
+func (r result[T]) Maybe() fun.Maybe[T] {
+	return fun.NewMaybe(r.IsSuccess(), r.Either().Left())
 }
