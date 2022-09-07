@@ -1,6 +1,10 @@
 package result
 
-import "github.com/sagmor/fun"
+import (
+	"fmt"
+
+	"github.com/sagmor/fun"
+)
 
 // StepFun is a function to transform from one type to the other.
 type StepFun[From, To any] func(From) (To, error)
@@ -70,4 +74,18 @@ func Steps4[T1, T2, T3, T4, T5 any](
 		),
 		step4,
 	)
+}
+
+// As converts a result from one type to another or fails.
+// Useful for transitioning between an interface and it's implementation.
+func As[T, S any](source fun.Result[S]) fun.Result[T] {
+	if source.IsFailure() {
+		return Failure[T](source.Error())
+	}
+
+	if result, ok := interface{}(source.RequireValue()).(T); ok {
+		return Success(result)
+	}
+
+	return Failure[T](fmt.Errorf("failed to convert %v to %T", source.RequireValue(), fun.Nil[T]()))
 }
