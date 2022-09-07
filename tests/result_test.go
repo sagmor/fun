@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"fmt"
 	"strconv"
 	"testing"
 
@@ -90,4 +91,41 @@ func TestSteps(t *testing.T) {
 		strconv.Atoi,
 		result.Stepper(strconv.Itoa),
 	).Error())
+}
+
+type testResultAsHelper struct{}
+
+func (testResultAsHelper) GoString() string {
+	return "hello"
+}
+
+func TestResultAs(t *testing.T) {
+	// Struct/Interface transition
+	t1 := result.Success(testResultAsHelper{})
+	t2 := result.Success[fmt.GoStringer](testResultAsHelper{})
+	assert.NotEqual(t, t1, t2)
+	assert.Equal(t, t1, result.As[testResultAsHelper](t1))
+	assert.Equal(t, t1, result.As[testResultAsHelper](t2))
+	assert.Equal(t, t2, result.As[fmt.GoStringer](t1))
+	assert.Equal(t, t2, result.As[fmt.GoStringer](t2))
+	assert.True(t, result.As[string](t2).IsFailure())
+
+	// string/any transition
+	t3 := result.Success("a string")
+	t4 := result.Success[any]("a string")
+	assert.Equal(t, t3, result.As[string](t4))
+	assert.Equal(t, t4, result.As[any](t3))
+	assert.True(t, result.As[int](t3).IsFailure())
+
+	// number/any transition
+	t5 := result.Success(5)
+	t6 := result.Success[any](5)
+	assert.Equal(t, t5, result.As[int](t6))
+	assert.Equal(t, t6, result.As[any](t5))
+
+	// As doesn't cast
+	assert.True(t, result.As[uint](t5).IsFailure())
+
+	// Original error pass through
+	assert.Equal(t, result.Failure[any](assert.AnError), result.As[any](result.Failure[string](assert.AnError)))
 }
