@@ -1,6 +1,7 @@
 package result
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/sagmor/fun"
@@ -80,16 +81,23 @@ func Steps4[T1, T2, T3, T4, T5 any](
 	)
 }
 
+// ErrTypeConversionFailed represent errors when transitioning between types.
+var ErrTypeConversionFailed = errors.New("failed to convert between types")
+
+// AsFun converts from one type to another.
+func AsFun[T, S any](source S) (T, error) {
+	var result T
+
+	result, ok := interface{}(source).(T)
+	if !ok {
+		return result, fmt.Errorf("[%w] from %v to %T", ErrTypeConversionFailed, source, result)
+	}
+
+	return result, nil
+}
+
 // As converts a result from one type to another or fails.
 // Useful for transitioning between an interface and it's implementation.
 func As[T, S any](source fun.Result[S]) fun.Result[T] {
-	if source.IsFailure() {
-		return Failure[T](source.Error())
-	}
-
-	if result, ok := interface{}(source.RequireValue()).(T); ok {
-		return Success(result)
-	}
-
-	return Failure[T](fmt.Errorf("failed to convert %v to %T", source.RequireValue(), fun.Nil[T]()))
+	return Step(source, AsFun[T, S])
 }

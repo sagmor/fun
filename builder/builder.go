@@ -30,10 +30,13 @@ func (b *Builder[T]) Apply(options ...Option[T]) *Builder[T] {
 	return b
 }
 
+// ErrDoubleFinishAttempted indicates a builder was finished more than once.
+var ErrDoubleFinishAttempted = errors.New("a builder can be finished only once")
+
 // Finish closes the builder and returns the generated object.
 func (b *Builder[T]) Finish() fun.Result[*T] {
 	object := b.object
-	b.object = result.Failure[*T](errors.New("a builder can only be finished only once"))
+	b.object = result.Failure[*T](ErrDoubleFinishAttempted)
 
 	return object
 }

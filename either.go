@@ -1,6 +1,8 @@
 package fun
 
-import "fmt"
+import (
+	"errors"
+)
 
 // Either represents one of two possible results.
 type Either[L, R any] struct {
@@ -31,12 +33,13 @@ func (e Either[L, R]) Left() L {
 	return e.left
 }
 
-var errMissingLeftValue = fmt.Errorf("no Left value available")
+// ErrMissingLeftValue represents a failure to extract a Left value from an Either.
+var ErrMissingLeftValue = errors.New("either had no left value")
 
 // RequireLeft gets the left value of the either or panics.
 func (e Either[L, R]) RequireLeft() L {
 	if !e.IsLeft() {
-		panic(errMissingLeftValue)
+		panic(ErrMissingLeftValue)
 	}
 
 	return e.left
@@ -52,12 +55,13 @@ func (e Either[L, R]) Right() R {
 	return e.right
 }
 
-var errMissingRightValue = fmt.Errorf("no Right value available")
+// ErrMissingRightValue represents a failure to extract a Right value from an Either.
+var ErrMissingRightValue = errors.New("either had no right value")
 
 // RequireRight gets the right value of the either or panics.
 func (e Either[L, R]) RequireRight() R {
 	if !e.IsRight() {
-		panic(errMissingRightValue)
+		panic(ErrMissingRightValue)
 	}
 
 	return e.right

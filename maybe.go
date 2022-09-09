@@ -1,6 +1,6 @@
 package fun
 
-import "fmt"
+import "errors"
 
 // Maybe can eithe contin a value or not.
 type Maybe[T any] Either[T, Nothing]
@@ -32,12 +32,13 @@ func (m Maybe[T]) Either() Either[T, Nothing] {
 	return Either[T, Nothing](m)
 }
 
-var errMaybeMissingValue = fmt.Errorf("maybe has no value")
+// ErrMaybeMissingValue represents a failure to extract a value from a Maybe.
+var ErrMaybeMissingValue = errors.New("maybe had no value")
 
 // RequireValue gets the value or panics.
 func (m Maybe[T]) RequireValue() T {
 	if m.IsEmpty() {
-		panic(errMaybeMissingValue)
+		panic(ErrMaybeMissingValue)
 	}
 
 	return m.left
