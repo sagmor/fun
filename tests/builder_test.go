@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/sagmor/fun/builder"
+	"github.com/sagmor/fun/ensure"
 )
 
 type testBuildableObject struct {
@@ -19,11 +20,14 @@ func TestBuildReturnsAnObject(t *testing.T) {
 }
 
 func TestBuildExecutesOptions(t *testing.T) {
-	o := builder.Build(func(o *testBuildableObject) error {
-		o.Name = "other_name"
-		return nil
-	})
-	assert.Equal(t, "other_name", o.RequireValue().Name)
+	o := ensure.Value(t,
+		builder.Build(func(o *testBuildableObject) error {
+			o.Name = "other_name"
+			return nil
+		}),
+	)
+	
+	assert.Equal(t, "other_name", o.Name)
 }
 
 func TestBuildPassThroughOptionErrors(t *testing.T) {
