@@ -56,7 +56,9 @@ func TestIteratorReduce(t *testing.T) {
 
 	it := iterator.FromSlice([]int{1, 2, 3})
 
-	assert.Equal(t, 6, iterator.Reduce(it, 0, func(r, i int) int { return r + i }))
+	assert.Equal(t, 6, iterator.Reduce(it, 0, func(r, i int) int {
+		return r + i
+	}))
 }
 
 func TestIteratorAny(t *testing.T) {
@@ -93,7 +95,12 @@ func TestIteratorWithTransform(t *testing.T) {
 func TestIteratorWithFilter(t *testing.T) {
 	t.Parallel()
 
-	it := iterator.WithFilter(iterator.FromSlice([]int{1, 2, 3, 4, 5}), func(i int) bool { return i%2 == 0 })
+	it := iterator.WithFilter(
+		iterator.FromSlice([]int{1, 2, 3, 4, 5}),
+		func(i int) bool {
+			return i%2 == 0
+		},
+	)
 	assert.True(t, it.Next())
 	assert.Equal(t, 2, it.Value())
 

@@ -19,7 +19,12 @@ type Builder[T any] struct {
 // Apply invokes the provided builder options against the object being built.
 func (b *Builder[T]) Apply(options ...Option[T]) *Builder[T] {
 	for _, opt := range options {
-		b.object = result.Step(b.object, func(o *T) (*T, error) { return o, opt(o) })
+		b.object = result.Step(
+			b.object,
+			func(o *T) (*T, error) {
+				return o, opt(o)
+			},
+		)
 	}
 
 	return b

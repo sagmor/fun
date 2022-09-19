@@ -15,12 +15,15 @@ linters:
     - containedctx
 
     # Deprecated linters
+    - deadcode
     - exhaustivestruct
     - golint
     - ifshort
     - interfacer
     - maligned
+    - nosnakecase
     - scopelint
+    - varcheck
 
     # disabled because of generics
     # See: https://github.com/golangci/golangci-lint/issues/2649

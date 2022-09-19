@@ -10,7 +10,9 @@ func Nil[T any]() T {
 
 // Default returns a static value.
 func Default[T any](v T) func() T {
-	return func() T { return v }
+	return func() T {
+		return v
+	}
 }
 
 // Identity returns the same object.

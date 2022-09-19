@@ -66,7 +66,9 @@ func TestStep(t *testing.T) {
 
 	assert.Error(t, result.Step(
 		result.Success(3),
-		func(int) (string, error) { return "", assert.AnError },
+		func(int) (string, error) {
+			return "", assert.AnError
+		},
 	).Error())
 }
 
