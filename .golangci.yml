@@ -7,11 +7,10 @@ linters:
   enable-all: true
   disable:
     - ireturn # This library intentionally return interfaces.
+    - wrapcheck # This library structures are intended to store errors.
 
     # To Be Enabled
-    - wrapcheck
     - varnamelen
-    - goerr113
     - containedctx
 
     # Deprecated linters
