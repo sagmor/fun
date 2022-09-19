@@ -19,7 +19,8 @@ func Stepper[From, To any](f func(From) To) StepFun[From, To] {
 // Step transitions from one result to another.
 func Step[From, To any](
 	from fun.Result[From],
-	step StepFun[From, To]) fun.Result[To] {
+	step StepFun[From, To],
+) fun.Result[To] {
 	val, err := from.Tuple()
 	if err != nil {
 		return Failure[To](err)
@@ -32,7 +33,8 @@ func Step[From, To any](
 func Steps2[T1, T2, T3 any](
 	from fun.Result[T1],
 	step1 StepFun[T1, T2],
-	step2 StepFun[T2, T3]) fun.Result[T3] {
+	step2 StepFun[T2, T3],
+) fun.Result[T3] {
 	return Step(
 		Step(
 			from,
@@ -47,7 +49,8 @@ func Steps3[T1, T2, T3, T4 any](
 	from fun.Result[T1],
 	step1 StepFun[T1, T2],
 	step2 StepFun[T2, T3],
-	step3 StepFun[T3, T4]) fun.Result[T4] {
+	step3 StepFun[T3, T4],
+) fun.Result[T4] {
 	return Step(
 		Steps2(
 			from,
@@ -64,7 +67,8 @@ func Steps4[T1, T2, T3, T4, T5 any](
 	step1 StepFun[T1, T2],
 	step2 StepFun[T2, T3],
 	step3 StepFun[T3, T4],
-	step4 StepFun[T4, T5]) fun.Result[T5] {
+	step4 StepFun[T4, T5],
+) fun.Result[T5] {
 	return Step(
 		Steps3(
 			from,

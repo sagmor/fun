@@ -1,4 +1,4 @@
-package tests
+package fun_test
 
 import (
 	"testing"
@@ -9,6 +9,8 @@ import (
 )
 
 func TestLeft(t *testing.T) {
+	t.Parallel()
+
 	e := either.Left[string](3)
 
 	assert.True(t, e.IsLeft())
@@ -25,6 +27,8 @@ func TestLeft(t *testing.T) {
 }
 
 func TestRight(t *testing.T) {
+	t.Parallel()
+
 	e := either.Right[int]("hello")
 
 	assert.True(t, e.IsRight())

@@ -1,4 +1,4 @@
-package tests
+package fun_test
 
 import (
 	"context"
@@ -15,6 +15,8 @@ import (
 )
 
 func TestPromiseFromValue(t *testing.T) {
+	t.Parallel()
+
 	p := promise.FromValue(3)
 
 	assert.Equal(t, result.Success(3), p.Result())
@@ -26,6 +28,8 @@ func TestPromiseFromValue(t *testing.T) {
 }
 
 func TestPromiseFromError(t *testing.T) {
+	t.Parallel()
+
 	p := promise.FromError[string](assert.AnError)
 
 	assert.Equal(t, result.Failure[string](assert.AnError), p.Result())
@@ -35,6 +39,8 @@ func TestPromiseFromError(t *testing.T) {
 }
 
 func TestPromiseFromResult(t *testing.T) {
+	t.Parallel()
+
 	r := result.Success("hello")
 	p := promise.FromResult(r)
 
@@ -42,8 +48,11 @@ func TestPromiseFromResult(t *testing.T) {
 }
 
 func TestPromiseWithTimeout(t *testing.T) {
+	t.Parallel()
+
 	p := promise.WithTimeout(time.Millisecond*10, func(ctx context.Context) (bool, error) {
 		time.Sleep(time.Second)
+
 		return true, nil
 	})
 	assert.False(t, p.IsResolved())
@@ -51,8 +60,11 @@ func TestPromiseWithTimeout(t *testing.T) {
 }
 
 func TestPromiseWithDeadline(t *testing.T) {
+	t.Parallel()
+
 	p := promise.WithDeadline(time.Now().Add(time.Millisecond), func(ctx context.Context) (bool, error) {
 		time.Sleep(time.Second)
+
 		return true, nil
 	})
 	assert.False(t, p.IsResolved())
@@ -60,8 +72,11 @@ func TestPromiseWithDeadline(t *testing.T) {
 }
 
 func TestPromiseCancel(t *testing.T) {
+	t.Parallel()
+
 	p := promise.New(func(ctx context.Context) (bool, error) {
 		time.Sleep(time.Second)
+
 		return true, nil
 	})
 	p.Cancel()
@@ -69,9 +84,12 @@ func TestPromiseCancel(t *testing.T) {
 }
 
 func TestPromiseAll(t *testing.T) {
+	t.Parallel()
+
 	build := func(i int) fun.Promise[int] {
 		return promise.New(func(ctx context.Context) (int, error) {
 			time.Sleep(time.Millisecond * time.Duration(10*i))
+
 			return i, nil
 		})
 	}
@@ -91,14 +109,18 @@ func TestPromiseAll(t *testing.T) {
 }
 
 func TestPromiseCancelRace(t *testing.T) {
+	t.Parallel()
+
 	i := 0
 	for i < 100 {
 		p := promise.FromValue(i)
 		go p.Cancel()
+
 		val, err := p.Tuple()
 		if err == nil {
 			assert.Equal(t, i, val)
 		}
+
 		i++
 	}
 }

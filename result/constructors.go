@@ -1,3 +1,4 @@
+// Package result implements functions to work with fun.Result[T] types.
 package result
 
 import (

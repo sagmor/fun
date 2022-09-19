@@ -1,4 +1,4 @@
-package tests
+package fun_test
 
 import (
 	"fmt"
@@ -13,6 +13,8 @@ import (
 )
 
 func TestSuccess(t *testing.T) {
+	t.Parallel()
+
 	r := result.Success(5)
 
 	assert.True(t, r.IsSuccess())
@@ -27,6 +29,8 @@ func TestSuccess(t *testing.T) {
 }
 
 func TestFailure(t *testing.T) {
+	t.Parallel()
+
 	r := result.Failure[int](assert.AnError)
 
 	assert.False(t, r.IsSuccess())
@@ -43,6 +47,8 @@ func TestFailure(t *testing.T) {
 }
 
 func TestStep(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, 5, result.Step(
 		result.Success("5"),
 		strconv.Atoi,
@@ -60,11 +66,15 @@ func TestStep(t *testing.T) {
 
 	assert.Error(t, result.Step(
 		result.Success(3),
-		func(int) (string, error) { return "", assert.AnError },
+		func(int) (string, error) {
+			return "", assert.AnError
+		},
 	).Error())
 }
 
 func TestSteps(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, "5", result.Steps2(
 		result.Success("5"),
 		strconv.Atoi,
@@ -100,6 +110,8 @@ func (testResultAsHelper) GoString() string {
 }
 
 func TestResultAs(t *testing.T) {
+	t.Parallel()
+
 	// Struct/Interface transition
 	t1 := result.Success(testResultAsHelper{})
 	t2 := result.Success[fmt.GoStringer](testResultAsHelper{})

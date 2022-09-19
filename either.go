@@ -59,6 +59,7 @@ func (e Either[L, R]) RequireRight() R {
 	if !e.IsRight() {
 		panic(errMissingRightValue)
 	}
+
 	return e.right
 }
 

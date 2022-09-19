@@ -1,4 +1,4 @@
-package tests
+package fun_test
 
 import (
 	"testing"
@@ -9,6 +9,8 @@ import (
 )
 
 func TestNil(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, 0, fun.Nil[int]())
 	assert.Equal(t, "", fun.Nil[string]())
 	assert.Equal(t, nil, fun.Nil[interface{}]())

@@ -1,4 +1,4 @@
-package tests
+package fun_test
 
 import (
 	"testing"
@@ -11,6 +11,8 @@ import (
 )
 
 func TestJust(t *testing.T) {
+	t.Parallel()
+
 	m := maybe.Just(5)
 
 	assert.True(t, m.HasValue())
@@ -20,6 +22,8 @@ func TestJust(t *testing.T) {
 }
 
 func TestMaybeEmpty(t *testing.T) {
+	t.Parallel()
+
 	m := maybe.Empty[int]()
 
 	assert.True(t, m.IsEmpty())

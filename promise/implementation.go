@@ -40,6 +40,7 @@ func newPromise[T any](ctx context.Context, cancelFunc context.CancelFunc, handl
 func (p *promise[T]) resolver(val T, err error) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
+
 	if p.IsResolved() {
 		return
 	}
@@ -61,6 +62,7 @@ func (p *promise[T]) IsResolved() bool {
 // Result implements Promise.
 func (p *promise[T]) Result() fun.Result[T] {
 	p.Wait()
+
 	return p.resolution.RequireValue()
 }
 
@@ -98,17 +100,17 @@ func (p *promise[T]) RequireValue() T {
 	return p.Result().RequireValue()
 }
 
-// ToEither implements Result.
+// Either implements Result.
 func (p *promise[T]) Either() fun.Either[T, error] {
 	return p.Result().Either()
 }
 
-// ToMaybe implements Result.
+// Maybe implements Result.
 func (p *promise[T]) Maybe() fun.Maybe[T] {
 	return p.Result().Maybe()
 }
 
-// ToTuple implements Result.
+// Tuple implements Result.
 func (p *promise[T]) Tuple() (T, error) {
 	return p.Result().Tuple()
 }

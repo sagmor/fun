@@ -1,3 +1,4 @@
+// Package promise implements functions to work with fun.Promise[T] types.
 package promise
 
 import (
@@ -10,6 +11,7 @@ import (
 // New builds a new promise.
 func New[T any](handler Handler[T]) fun.Promise[T] {
 	ctx, cancelFunc := context.WithCancel(context.Background())
+
 	return newPromise(ctx, cancelFunc, handler)
 }
 
