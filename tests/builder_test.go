@@ -1,4 +1,4 @@
-package tests
+package fun_test
 
 import (
 	"testing"
@@ -13,20 +13,27 @@ type testBuildableObject struct {
 }
 
 func TestBuildReturnsAnObject(t *testing.T) {
+	t.Parallel()
+
 	o := builder.Build[testBuildableObject]()
 	assert.NotNil(t, o)
 	assert.True(t, o.IsSuccess())
 }
 
 func TestBuildExecutesOptions(t *testing.T) {
+	t.Parallel()
+
 	o := builder.Build(func(o *testBuildableObject) error {
 		o.Name = "other_name"
+
 		return nil
 	})
 	assert.Equal(t, "other_name", o.RequireValue().Name)
 }
 
 func TestBuildPassThroughOptionErrors(t *testing.T) {
+	t.Parallel()
+
 	o := builder.Build(func(o *testBuildableObject) error {
 		return assert.AnError
 	})
@@ -36,6 +43,8 @@ func TestBuildPassThroughOptionErrors(t *testing.T) {
 }
 
 func TestFinishCanRunOnlyOnce(t *testing.T) {
+	t.Parallel()
+
 	b := builder.Start[testBuildableObject]()
 
 	_ = b.Finish()
@@ -46,9 +55,12 @@ func TestFinishCanRunOnlyOnce(t *testing.T) {
 }
 
 func TestApplyShortCircuitsOnError(t *testing.T) {
+	t.Parallel()
+
 	counter := 0
 	option := func(*testBuildableObject) error {
 		counter++
+
 		return assert.AnError
 	}
 	o := builder.Build(option, option, option)

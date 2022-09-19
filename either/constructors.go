@@ -1,3 +1,4 @@
+// Package either implements functions to work with fun.Either[L,R] types.
 package either
 
 import "github.com/sagmor/fun"

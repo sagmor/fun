@@ -23,7 +23,7 @@ func (r result[T]) IsSuccess() bool {
 	return r.Either().IsLeft()
 }
 
-// RequireValue get's the result value or panics.
+// RequireValue gets the result value or panics.
 func (r result[T]) RequireValue() T {
 	if r.IsSuccess() {
 		return r.Either().Left()
@@ -32,17 +32,17 @@ func (r result[T]) RequireValue() T {
 	panic(r.Error())
 }
 
-// Get extract both value and error.
+// Tuple extract both value and error.
 func (r result[T]) Tuple() (T, error) {
 	return r.Either().Tuple()
 }
 
-// ToEither converts a result to an Either.
+// Either converts a result to an Either.
 func (r result[T]) Either() fun.Either[T, error] {
 	return fun.Either[T, error](r)
 }
 
-// ToMaybe converts a result to a Maybe.
+// Maybe converts a result to a Maybe.
 func (r result[T]) Maybe() fun.Maybe[T] {
 	return fun.NewMaybe(r.IsSuccess(), r.Either().Left())
 }

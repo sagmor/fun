@@ -26,5 +26,6 @@ func Any[T any](iter fun.Iterator[T]) fun.Maybe[T] {
 	if iter.Next() {
 		return maybe.Just(iter.Value())
 	}
+
 	return maybe.Empty[T]()
 }

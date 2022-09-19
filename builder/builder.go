@@ -1,4 +1,4 @@
-// Package generic provides tools to build different XDS object types
+// Package builder provides tools to build different XDS object types
 package builder
 
 import (
@@ -21,6 +21,7 @@ func (b *Builder[T]) Apply(options ...Option[T]) *Builder[T] {
 	for _, opt := range options {
 		b.object = result.Step(b.object, func(o *T) (*T, error) { return o, opt(o) })
 	}
+
 	return b
 }
 
@@ -28,6 +29,7 @@ func (b *Builder[T]) Apply(options ...Option[T]) *Builder[T] {
 func (b *Builder[T]) Finish() fun.Result[*T] {
 	object := b.object
 	b.object = result.Failure[*T](errors.New("a builder can only be finished only once"))
+
 	return object
 }
 
@@ -35,6 +37,7 @@ func (b *Builder[T]) Finish() fun.Result[*T] {
 func Start[T any]() *Builder[T] {
 	builder := new(Builder[T])
 	builder.object = result.Success(new(T))
+
 	return builder
 }
 

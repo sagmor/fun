@@ -31,9 +31,11 @@ func Reduce[T, R any](iter Iterator[T], start R, collector func(R, T) R) R {
 // Any return any value provided by the iterator if there is any.
 func Any[T any](iter Iterator[T]) Maybe[T] {
 	var anyValue T
+
 	hasAny := iter.Next()
 	if hasAny {
 		anyValue = iter.Value()
 	}
+
 	return NewMaybe(hasAny, anyValue)
 }

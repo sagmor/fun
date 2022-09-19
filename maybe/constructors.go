@@ -1,3 +1,4 @@
+// Package maybe implements functions to work with fun.Maybe[T] types.
 package maybe
 
 import "github.com/sagmor/fun"

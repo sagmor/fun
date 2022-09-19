@@ -1,3 +1,4 @@
+// Package iterator implements functions to work with fun.Iterator[T] types.
 package iterator
 
 import "github.com/sagmor/fun"
@@ -10,6 +11,7 @@ type sliceIterator[T any] struct {
 // Next implements fun.Iterator.
 func (i *sliceIterator[T]) Next() bool {
 	i.current++
+
 	return i.current < len(i.values)
 }
 
@@ -34,6 +36,7 @@ type revertSliceIterator[T any] struct {
 // Next implements fun.Iterator.
 func (i *revertSliceIterator[T]) Next() bool {
 	i.current--
+
 	return i.current >= 0
 }
 
