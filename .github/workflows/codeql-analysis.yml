@@ -2,7 +2,7 @@ name: CodeQL Analysis
 
 on:
   push:
-      tags:
+    tags:
       - v*
     branches:
       - main
