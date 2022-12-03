@@ -68,3 +68,26 @@ func TestApplyShortCircuitsOnError(t *testing.T) {
 	assert.True(t, o.IsFailure())
 	assert.Equal(t, 1, counter)
 }
+
+func TestWithOptions(t *testing.T) {
+	t.Parallel()
+
+	counter := 0
+	option := func(*testBuildableObject) error {
+		counter++
+
+		return nil
+	}
+
+	o := builder.Build(
+		option,
+		builder.WithOptions([]builder.Option[testBuildableObject]{
+			option,
+			option,
+		}),
+		option,
+	)
+
+	assert.True(t, o.IsSuccess())
+	assert.Equal(t, 4, counter)
+}
