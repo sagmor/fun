@@ -7,6 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/sagmor/fun"
 	"github.com/sagmor/fun/either"
 	"github.com/sagmor/fun/maybe"
 	"github.com/sagmor/fun/result"
@@ -140,4 +141,14 @@ func TestResultAs(t *testing.T) {
 
 	// Original error pass through
 	assert.Equal(t, result.Failure[any](assert.AnError), result.As[any](result.Failure[string](assert.AnError)))
+}
+
+func TestResultCollect(t *testing.T) {
+	t.Parallel()
+
+	a1 := []fun.Result[int]{result.Success(1), result.Success(2), result.Success(3)}
+	assert.Equal(t, []int{1, 2, 3}, result.Collect(a1).RequireValue())
+
+	a2 := []fun.Result[int]{result.Success(1), result.Failure[int](assert.AnError), result.Success(3)}
+	assert.Equal(t, assert.AnError, result.Collect(a2).Error())
 }
