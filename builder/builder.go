@@ -53,3 +53,17 @@ func Start[T any]() *Builder[T] {
 func Build[T any](options ...Option[T]) fun.Result[*T] {
 	return Start[T]().Apply(options...).Finish()
 }
+
+// WithOptions allows the mixing of Option arrays with regular Options when building objects.
+func WithOptions[T any](options []Option[T]) Option[T] {
+	return func(t *T) error {
+		for _, option := range options {
+			err := option(t)
+			if err != nil {
+				return err
+			}
+		}
+
+		return nil
+	}
+}
