@@ -26,6 +26,10 @@ func TestTaskFailure(t *testing.T) {
 	assert.False(t, r.IsSuccess())
 	assert.True(t, r.IsFailure())
 	assert.Equal(t, assert.AnError, r.Error())
+
+	assert.Panics(t, func() {
+		task.Failure(nil)
+	})
 }
 
 func TestTaskFromReturn(t *testing.T) {
