@@ -91,3 +91,24 @@ func TestWithOptions(t *testing.T) {
 	assert.True(t, o.IsSuccess())
 	assert.Equal(t, 4, counter)
 }
+
+func TestBuilderWithFuncion(t *testing.T) {
+	t.Parallel()
+
+	counter := 0
+
+	o := builder.Build(
+		builder.WithFunction(func() builder.Option[testBuildableObject] {
+			counter++
+
+			return func(*testBuildableObject) error {
+				counter++
+
+				return nil
+			}
+		}),
+	)
+
+	assert.True(t, o.IsSuccess())
+	assert.Equal(t, 2, counter)
+}

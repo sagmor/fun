@@ -67,3 +67,10 @@ func WithOptions[T any](options []Option[T]) Option[T] {
 		return nil
 	}
 }
+
+// WithFunction allows to insert an arbitrary function within a build chain.
+func WithFunction[T any](function func() Option[T]) Option[T] {
+	return func(t *T) error {
+		return function()(t)
+	}
+}
