@@ -83,7 +83,7 @@ func TestWithOptions(t *testing.T) {
 		return nil
 	}
 
-	o := builder.Build(
+	o1 := builder.Build(
 		option,
 		builder.WithOptions([]builder.Option[testBuildableObject]{
 			option,
@@ -92,8 +92,21 @@ func TestWithOptions(t *testing.T) {
 		option,
 	)
 
-	assert.True(t, o.IsSuccess())
+	assert.True(t, o1.IsSuccess())
 	assert.Equal(t, 4, counter)
+
+	o2 := builder.Build(
+		option,
+		builder.WithOptions([]builder.Option[testBuildableObject]{
+			option,
+			builder.WithError[testBuildableObject](assert.AnError),
+		}),
+		option,
+	)
+
+	assert.True(t, o2.IsFailure())
+	assert.Equal(t, 6, counter)
+	assert.Equal(t, assert.AnError, o2.Error())
 }
 
 func TestBuilderFromFunction(t *testing.T) {
