@@ -68,8 +68,8 @@ func WithOptions[T any](options []Option[T]) Option[T] {
 	}
 }
 
-// Fail just fails a builder chain with the specified error.
-func Fail[T any](err error) Option[T] {
+// WithError just fails a builder chain with the specified error.
+func WithError[T any](err error) Option[T] {
 	return func(*T) error {
 		return err
 	}
@@ -85,7 +85,7 @@ func FromFunction[T any](function func() Option[T]) Option[T] {
 // FromResult allows to derive options from a fun.Result value.
 func FromResult[R, T any](r fun.Result[R], then func(R) Option[T]) Option[T] {
 	if r.IsFailure() {
-		return Fail[T](r.Error())
+		return WithError[T](r.Error())
 	}
 
 	return then(r.RequireValue())

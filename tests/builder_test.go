@@ -40,7 +40,7 @@ func TestBuildExecutesOptions(t *testing.T) {
 func TestBuildPassThroughOptionErrors(t *testing.T) {
 	t.Parallel()
 
-	o := builder.Build(builder.Fail[testBuildableObject](assert.AnError))
+	o := builder.Build(builder.WithError[testBuildableObject](assert.AnError))
 	assert.NotNil(t, o)
 	assert.True(t, o.IsFailure())
 	assert.Equal(t, assert.AnError, o.Error())
