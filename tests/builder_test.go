@@ -1,15 +1,25 @@
 package fun_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 
 	"github.com/sagmor/fun/builder"
+	"github.com/sagmor/fun/result"
 )
 
 type testBuildableObject struct {
 	Name string
+}
+
+func withName(name string) builder.Option[testBuildableObject] {
+	return func(t *testBuildableObject) error {
+		t.Name = name
+
+		return nil
+	}
 }
 
 func TestBuildReturnsAnObject(t *testing.T) {
@@ -23,20 +33,14 @@ func TestBuildReturnsAnObject(t *testing.T) {
 func TestBuildExecutesOptions(t *testing.T) {
 	t.Parallel()
 
-	o := builder.Build(func(o *testBuildableObject) error {
-		o.Name = "other_name"
-
-		return nil
-	})
+	o := builder.Build(withName("other_name"))
 	assert.Equal(t, "other_name", o.RequireValue().Name)
 }
 
 func TestBuildPassThroughOptionErrors(t *testing.T) {
 	t.Parallel()
 
-	o := builder.Build(func(o *testBuildableObject) error {
-		return assert.AnError
-	})
+	o := builder.Build(builder.Fail[testBuildableObject](assert.AnError))
 	assert.NotNil(t, o)
 	assert.True(t, o.IsFailure())
 	assert.Equal(t, assert.AnError, o.Error())
@@ -92,23 +96,37 @@ func TestWithOptions(t *testing.T) {
 	assert.Equal(t, 4, counter)
 }
 
-func TestBuilderWithFuncion(t *testing.T) {
+func TestBuilderFromFunction(t *testing.T) {
 	t.Parallel()
 
 	counter := 0
 
 	o := builder.Build(
-		builder.WithFunction(func() builder.Option[testBuildableObject] {
+		builder.FromFunction(func() builder.Option[testBuildableObject] {
 			counter++
 
-			return func(*testBuildableObject) error {
-				counter++
-
-				return nil
-			}
+			return withName(fmt.Sprintf("%d", counter))
 		}),
 	)
 
 	assert.True(t, o.IsSuccess())
-	assert.Equal(t, 2, counter)
+	assert.Equal(t, 1, counter)
+	assert.Equal(t, "1", o.RequireValue().Name)
+}
+
+func TestBuilderFromResult(t *testing.T) {
+	t.Parallel()
+
+	o1 := builder.Build(
+		builder.FromResult(result.Success("some_name"), withName),
+	)
+
+	assert.Equal(t, "some_name", o1.RequireValue().Name)
+
+	o2 := builder.Build(
+		builder.FromResult(result.Failure[string](assert.AnError), withName),
+	)
+
+	assert.True(t, o2.IsFailure())
+	assert.Equal(t, assert.AnError, o2.Error())
 }
