@@ -40,15 +40,22 @@ linters-settings:
       - prefix(github.com/sagmor/fun)
   depguard:
     rules:
-      main:
+      root:
         files:
-          - $all
+          - "*.go"
         allow: 
           - $gostd
           - github.com/sagmor/fun
           - github.com/sagmor/fun/maybe
+          - github.com/sagmor/fun/promise
           - github.com/sagmor/fun/result
-          
+          - github.com/sagmor/fun/task
+      tests:
+        files:
+          - tests/**/*.go
+        deny:
+          - pkg: none
+
   revive:
     enable-all-rules: true
     rules:
