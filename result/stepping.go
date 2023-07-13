@@ -88,7 +88,7 @@ var ErrTypeConversionFailed = errors.New("failed to convert between types")
 func AsFun[T, S any](source S) (T, error) {
 	var result T
 
-	result, ok := interface{}(source).(T)
+	result, ok := any(source).(T)
 	if !ok {
 		return result, fmt.Errorf("[%w] from %v to %T", ErrTypeConversionFailed, source, result)
 	}

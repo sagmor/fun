@@ -38,6 +38,17 @@ linters-settings:
       - standard
       - default
       - prefix(github.com/sagmor/fun)
+  depguard:
+    rules:
+      main:
+        files:
+          - $all
+        allow: 
+          - $gostd
+          - github.com/sagmor/fun
+          - github.com/sagmor/fun/maybe
+          - github.com/sagmor/fun/result
+          
   revive:
     enable-all-rules: true
     rules:
