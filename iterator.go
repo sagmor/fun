@@ -1,10 +1,16 @@
 package fun
 
+import "errors"
+
 // Iterator allows you to iterate over collections.
 type Iterator[T any] interface {
 	Next() bool
 	Value() T
+	Clone() Result[Iterator[T]]
 }
+
+// ErrIteratorNotCloneable is returned by iterators that can't be cloned.
+var ErrIteratorNotCloneable = errors.New("iterator is not cloneable")
 
 // Map applies a mapper function to every element of an iterator an returns a slice.
 func Map[T, R any](iter Iterator[T], mapper func(T) R) []R {

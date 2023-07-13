@@ -102,6 +102,9 @@ func TestPromiseAll(t *testing.T) {
 	assert.True(t, all.Next())
 	assert.Equal(t, 2, all.Value().RequireValue())
 
+	cloned := all.Clone()
+	assert.Error(t, cloned.Error())
+
 	assert.True(t, all.Next())
 	assert.Equal(t, 3, all.Value().RequireValue())
 

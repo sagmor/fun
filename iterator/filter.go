@@ -2,6 +2,7 @@ package iterator
 
 import (
 	"github.com/sagmor/fun"
+	"github.com/sagmor/fun/result"
 )
 
 type filteredIterator[T any] struct {
@@ -25,6 +26,16 @@ func (iter *filteredIterator[T]) Next() bool {
 // Value implements fun.Iterator.
 func (iter *filteredIterator[T]) Value() T {
 	return iter.iterator.Value()
+}
+
+// Clone implements fun.Iterator.
+func (iter *filteredIterator[T]) Clone() fun.Result[fun.Iterator[T]] {
+	return result.Step(
+		iter.iterator.Clone(),
+		func(cloned fun.Iterator[T]) (fun.Iterator[T], error) {
+			return WithFilter(cloned, iter.filter), nil
+		},
+	)
 }
 
 // WithFilter creates an iterator that filter values as it's called.

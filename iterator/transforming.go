@@ -2,6 +2,7 @@ package iterator
 
 import (
 	"github.com/sagmor/fun"
+	"github.com/sagmor/fun/result"
 )
 
 type transformingIterator[From, To any] struct {
@@ -17,6 +18,16 @@ func (iter *transformingIterator[From, To]) Next() bool {
 // Value implements fun.Iterator.
 func (iter *transformingIterator[From, To]) Value() To {
 	return iter.transform(iter.iterator.Value())
+}
+
+// Clone implements fun.Iterator.
+func (iter *transformingIterator[From, To]) Clone() fun.Result[fun.Iterator[To]] {
+	return result.Step(
+		iter.iterator.Clone(),
+		func(clone fun.Iterator[From]) (fun.Iterator[To], error) {
+			return WithTransform(clone, iter.transform), nil
+		},
+	)
 }
 
 // WithTransform creates an iterator that transforms values as it's called.
