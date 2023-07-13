@@ -13,6 +13,6 @@ func TestNil(t *testing.T) {
 
 	assert.Equal(t, 0, fun.Nil[int]())
 	assert.Equal(t, "", fun.Nil[string]())
-	assert.Equal(t, nil, fun.Nil[interface{}]())
+	assert.Equal(t, nil, fun.Nil[any]())
 	assert.Equal(t, struct{}{}, fun.Nil[struct{}]())
 }
