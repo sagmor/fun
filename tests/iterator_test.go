@@ -37,6 +37,10 @@ func TestIteratorFromRevertSlice(t *testing.T) {
 	assert.True(t, it.Next())
 	assert.Equal(t, 2, it.Value())
 
+	cloned := it.Clone().RequireValue()
+	assert.True(t, cloned.Next())
+	assert.Equal(t, 3, cloned.Value())
+
 	assert.True(t, it.Next())
 	assert.Equal(t, 1, it.Value())
 
@@ -86,6 +90,10 @@ func TestIteratorWithTransform(t *testing.T) {
 	assert.True(t, it.Next())
 	assert.Equal(t, "2", it.Value())
 
+	cloned := it.Clone().RequireValue()
+	assert.True(t, cloned.Next())
+	assert.Equal(t, "1", cloned.Value())
+
 	assert.True(t, it.Next())
 	assert.Equal(t, "3", it.Value())
 
@@ -96,7 +104,7 @@ func TestIteratorWithFilter(t *testing.T) {
 	t.Parallel()
 
 	it := iterator.WithFilter(
-		iterator.FromSlice([]int{1, 2, 3, 4, 5}),
+		iterator.FromSlice([]int{1, 2, 3, 4, 5, 6}),
 		func(i int) bool {
 			return i%2 == 0
 		},
@@ -106,6 +114,13 @@ func TestIteratorWithFilter(t *testing.T) {
 
 	assert.True(t, it.Next())
 	assert.Equal(t, 4, it.Value())
+
+	cloned := it.Clone().RequireValue()
+	assert.True(t, cloned.Next())
+	assert.Equal(t, 2, cloned.Value())
+
+	assert.True(t, it.Next())
+	assert.Equal(t, 6, it.Value())
 
 	assert.False(t, it.Next())
 }

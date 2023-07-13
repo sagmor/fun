@@ -2,6 +2,7 @@ package promise
 
 import (
 	"github.com/sagmor/fun"
+	"github.com/sagmor/fun/result"
 )
 
 type promiseIterator[T any] struct {
@@ -26,6 +27,11 @@ func (iter *promiseIterator[T]) Next() bool {
 // Value implements fun.Iterator.
 func (iter *promiseIterator[T]) Value() fun.Result[T] {
 	return iter.promises[iter.current].Result()
+}
+
+// Clone implements fun.Iterator.
+func (*promiseIterator[T]) Clone() fun.Result[fun.Iterator[fun.Result[T]]] {
+	return result.Failure[fun.Iterator[fun.Result[T]]](fun.ErrIteratorNotCloneable)
 }
 
 // All iterates over all promises as they are resolved.
